@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>⚡ ВОЗДУШНАЯ ВОЙНА 2.0</title>
+    <title>⚡ ВОЗДУШНАЯ ВОЙНА 2.1</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
@@ -35,14 +35,26 @@
 
         .panel h3 { text-align: center; color: #0ff; font-size: 15px; margin-bottom: 4px; letter-spacing: 1px; }
         .subtitle { text-align: center; color: #6a8a9a; font-size: 10px; margin-bottom: 4px; }
-        .time-display { text-align: center; color: #ffd866; font-size: 13px; font-weight: bold; padding: 2px 0; }
-        .time-display span { color: #8aa3b9; font-weight: normal; font-size: 10px; }
+
+        .eta-display {
+            text-align: center;
+            background: #0a2a2a;
+            border: 1px solid #0ff;
+            border-radius: 30px;
+            padding: 4px 12px;
+            margin: 2px 0 4px;
+            color: #0ff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .eta-display span { color: #fff; font-size: 16px; }
+        .eta-display .label { color: #6a8a9a; font-size: 10px; font-weight: normal; }
 
         .stats {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            font-size: 11px;
+            gap: 8px;
+            font-size: 10px;
             color: #8aa3b9;
             margin: 3px 0 5px;
             padding: 3px 0;
@@ -53,21 +65,22 @@
         }
         .stats span { color: #fff; font-weight: bold; }
         .stats .power { color: #ffd866; }
-        .stats .power-off { color: #666; }
+        .stats .power-off { color: #f44; }
+        .stats .dead { color: #f44; }
 
-        .row { display: flex; gap: 4px; flex-wrap: wrap; margin: 3px 0; justify-content: center; }
+        .row { display: flex; gap: 3px; flex-wrap: wrap; margin: 3px 0; justify-content: center; }
         .btn {
-            padding: 6px 10px;
+            padding: 5px 8px;
             border: 1.5px solid #3a4a5a;
             border-radius: 30px;
             background: #1a1a2a;
             color: #b0c8dd;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             transition: 0.15s;
             touch-action: manipulation;
-            min-height: 34px;
+            min-height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -75,15 +88,15 @@
         }
         .btn:active { transform: scale(0.95); }
         .btn.active { border-color: #f1c40f; background: #1a2638; color: #f1c40f; }
-        .btn.launch { background: #a00; border-color: #f00; color: #fff; font-weight: bold; flex: 2; min-height: 42px; font-size: 15px; }
+        .btn.launch { background: #a00; border-color: #f00; color: #fff; font-weight: bold; flex: 2; min-height: 38px; font-size: 14px; }
         .btn.launch:disabled { opacity: 0.4; }
         .btn.green { background: #0a2a0a; border-color: #0a0; color: #0f0; }
         .btn.clear { background: #2a1a1a; border-color: #5a2a2a; color: #cc7777; }
-        .btn.weapon-btn { flex: 1; min-width: 50px; padding: 4px 5px; font-size: 10px; min-height: 30px; }
-        .btn.weapon-btn .emoji { font-size: 14px; }
+        .btn.weapon-btn { flex: 1; min-width: 44px; padding: 3px 4px; font-size: 9px; min-height: 26px; }
+        .btn.weapon-btn .emoji { font-size: 12px; }
         .btn.weapon-btn.ua { border-color: #0a5a7a; }
         .btn.weapon-btn.ru { border-color: #7a2a2a; }
-        .btn.small { padding: 3px 8px; font-size: 10px; min-height: 26px; }
+        .btn.small { padding: 3px 6px; font-size: 9px; min-height: 24px; }
 
         .coord-input {
             display: flex;
@@ -96,24 +109,24 @@
             border: 1px solid #1a2a3a;
             margin: 2px 0;
         }
-        .coord-input label { color: #6a8a9a; font-size: 9px; width: 32px; font-weight: 600; }
+        .coord-input label { color: #6a8a9a; font-size: 9px; width: 30px; font-weight: 600; }
         .coord-input input {
             background: #141e2a;
             border: 1px solid #2a3a4a;
             color: #fff;
-            padding: 4px 6px;
+            padding: 3px 5px;
             border-radius: 20px;
-            width: 60px;
-            font-size: 12px;
+            width: 55px;
+            font-size: 11px;
             text-align: center;
             font-weight: 600;
-            min-height: 28px;
+            min-height: 26px;
         }
         .coord-input input:focus { outline: 1px solid #0ff; }
         .coord-input .small-btn {
-            padding: 3px 8px;
-            font-size: 9px;
-            min-height: 24px;
+            padding: 2px 6px;
+            font-size: 8px;
+            min-height: 22px;
             background: #1a2a3a;
             border: 1px solid #2a4a5a;
             border-radius: 30px;
@@ -125,12 +138,12 @@
             background: #0a121e;
             border: 1px solid #1a2a3a;
             border-radius: 30px;
-            padding: 4px 10px;
-            font-size: 11px;
+            padding: 3px 8px;
+            font-size: 10px;
             color: #6a8a9a;
             margin: 2px 0;
             text-align: center;
-            min-height: 28px;
+            min-height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -138,13 +151,13 @@
         .marker-info .coord { color: #ffd866; font-weight: bold; }
 
         .side-toggle { display: flex; gap: 4px; align-items: center; background: #0a121e; border-radius: 30px; padding: 2px 5px; border: 1px solid #1a2a3a; margin: 2px 0; }
-        .side-toggle .side-btn { padding: 3px 10px; border-radius: 30px; border: 1.5px solid transparent; background: transparent; color: #6a8a9a; font-weight: 600; font-size: 10px; cursor: pointer; min-height: 26px; }
+        .side-toggle .side-btn { padding: 3px 8px; border-radius: 30px; border: 1.5px solid transparent; background: transparent; color: #6a8a9a; font-weight: 600; font-size: 10px; cursor: pointer; min-height: 24px; }
         .side-toggle .side-btn.active-ukr { border-color: #0ff; background: #0a2a4a; color: #0ff; }
         .side-toggle .side-btn.active-rus { border-color: #f66; background: #4a1a1a; color: #f66; }
 
-        .legend { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; margin-top: 3px; }
-        .legend-item { display: flex; align-items: center; gap: 2px; font-size: 8px; color: #6a8a9a; }
-        .legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; border: 1px solid #ffffff22; }
+        .legend { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; margin-top: 3px; }
+        .legend-item { display: flex; align-items: center; gap: 2px; font-size: 7px; color: #6a8a9a; }
+        .legend-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; border: 1px solid #ffffff22; }
 
         #toast {
             position: fixed;
@@ -170,14 +183,15 @@
         #toast.danger { border-color: #f00; color: #f00; }
 
         @media (max-width: 420px) {
-            .panel { padding: 6px 6px 8px; font-size: 10px; }
-            .coord-input input { width: 50px; font-size: 10px; min-height: 24px; }
-            .btn { font-size: 9px; padding: 4px 6px; min-height: 28px; }
-            .btn.launch { font-size: 13px; min-height: 36px; }
-            .btn.weapon-btn { font-size: 9px; min-height: 26px; padding: 3px 4px; }
-            .stats { font-size: 9px; gap: 6px; }
-            .panel h3 { font-size: 13px; }
-            .coord-input label { font-size: 8px; width: 26px; }
+            .panel { padding: 6px 5px 8px; font-size: 9px; }
+            .coord-input input { width: 45px; font-size: 9px; min-height: 22px; }
+            .btn { font-size: 8px; padding: 3px 5px; min-height: 24px; }
+            .btn.launch { font-size: 12px; min-height: 32px; }
+            .btn.weapon-btn { font-size: 8px; min-height: 22px; padding: 2px 3px; }
+            .btn.weapon-btn .emoji { font-size: 10px; }
+            .stats { font-size: 8px; gap: 4px; }
+            .panel h3 { font-size: 12px; }
+            .coord-input label { font-size: 7px; width: 24px; }
         }
     </style>
 </head>
@@ -186,42 +200,44 @@
 <div id="toast">🚀 Готов!</div>
 
 <div class="panel" id="panel">
-    <h3>⚡ ВОЗДУШНАЯ ВОЙНА 2.0</h3>
+    <h3>⚡ ВОЗДУШНАЯ ВОЙНА 2.1</h3>
     <div class="subtitle" id="sideSubtitle">🇺🇦 УКРАИНА</div>
-    <div class="time-display" id="timeDisplay">🕐 <span id="gameTime">06:00</span></div>
+
+    <div class="eta-display" id="etaDisplay">
+        <span class="label">⏱ Время подлёта:</span> <span id="etaValue">--</span> мин
+    </div>
 
     <div class="stats">
         <div>🎯 <span id="targetCount">0</span></div>
         <div>🛡 <span id="pvoCount">0</span></div>
         <div>💥 <span id="destroyedCount">0</span></div>
         <div>⚡ <span id="powerStatus" class="power">Свет есть</span></div>
+        <div>💀 <span id="deadCount" class="dead">0</span></div>
     </div>
 
-    <!-- Оружие -->
     <div class="row" id="weaponRow">
-        <!-- Украинское оружие -->
         <button class="btn weapon-btn ua active" data-w="ATACMS"><span class="emoji">🎯</span> ATACMS</button>
-        <button class="btn weapon-btn ua" data-w="BRLP_FP1"><span class="emoji">🛸</span> БРЛП ФП1</button>
+        <button class="btn weapon-btn ua" data-w="FLAMINGO"><span class="emoji">🦩</span> Фламинго</button>
+        <button class="btn weapon-btn ua" data-w="ORLAN_10"><span class="emoji">🦅</span> Орлан-10</button>
+        <button class="btn weapon-btn ua" data-w="BRLP_FP1"><span class="emoji">🛸</span> ФП1</button>
         <button class="btn weapon-btn ua" data-w="LYUTIY"><span class="emoji">🔥</span> Лютий</button>
         <button class="btn weapon-btn ua" data-w="STORM_SHADOW"><span class="emoji">🚀</span> Шторм</button>
         <button class="btn weapon-btn ua" data-w="NEPTUNE"><span class="emoji">🌊</span> Нептун</button>
-        <!-- Российское оружие -->
         <button class="btn weapon-btn ru" data-w="KINZHAL" style="display:none;"><span class="emoji">⚡</span> Кинжал</button>
         <button class="btn weapon-btn ru" data-w="ORESHNIK" style="display:none;"><span class="emoji">💫</span> Орешник</button>
-        <button class="btn weapon-btn ru" data-w="SHAHED_238" style="display:none;"><span class="emoji">🛸</span> Шахед-238</button>
+        <button class="btn weapon-btn ru" data-w="SHAHED_238" style="display:none;"><span class="emoji">🛸</span> Ш-238</button>
         <button class="btn weapon-btn ru" data-w="KALIBR" style="display:none;"><span class="emoji">🚀</span> Калибр</button>
         <button class="btn weapon-btn ru" data-w="ISKANDER" style="display:none;"><span class="emoji">💥</span> Искандер</button>
-        <button class="btn weapon-btn ru" data-w="SHAHED_136" style="display:none;"><span class="emoji">🛸</span> Шахед-136</button>
+        <button class="btn weapon-btn ru" data-w="SHAHED_136" style="display:none;"><span class="emoji">🛸</span> Ш-136</button>
         <button class="btn weapon-btn ru" data-w="GERBERA" style="display:none;"><span class="emoji">🦅</span> Гербера</button>
+        <button class="btn weapon-btn ru" data-w="KH_101" style="display:none;"><span class="emoji">✈️</span> Х-101</button>
     </div>
 
-    <!-- Смена стороны -->
     <div class="side-toggle">
         <button class="side-btn active-ukr" id="sideUkr">🇺🇦 Украина</button>
         <button class="side-btn" id="sideRus">🇷🇺 Россия</button>
     </div>
 
-    <!-- Координаты -->
     <div class="coord-input">
         <label>📍 Старт</label>
         <input type="number" id="startLat" step="0.01" placeholder="шир." value="51.73">
@@ -242,14 +258,16 @@
         <button class="btn clear" id="clearBtn">🗑</button>
     </div>
     <div class="row">
-        <button class="btn green" id="pvoUkr" style="flex:1;">🇺🇦 ПВО</button>
-        <button class="btn green" id="pvoRus" style="flex:1;">🇷🇺 ПВО</button>
+        <button class="btn green" id="pvoUkr" style="flex:1;">🇺🇦 Patriot</button>
+        <button class="btn green" id="pvoRus" style="flex:1;border-color:#0f0;color:#0f0;">🇷🇺 Панцирь</button>
         <button class="btn" id="clearPVOBtn" style="background:#2a1a2a; border-color:#4a2a4a; color:#aa77aa; flex:0.7;">🗑 ПВО</button>
         <button class="btn" id="repairPowerBtn" style="background:#1a3a1a; border-color:#0a0; color:#0f0; flex:0.7;">🔧 Свет</button>
     </div>
 
     <div class="legend">
         <span class="legend-item"><span class="legend-dot" style="background:#ff0;"></span> ATACMS</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ff66aa;"></span> Фламинго</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#8f8;"></span> Орлан-10</span>
         <span class="legend-item"><span class="legend-dot" style="background:#f90;"></span> ФП1</span>
         <span class="legend-item"><span class="legend-dot" style="background:#f44;"></span> Лютий</span>
         <span class="legend-item"><span class="legend-dot" style="background:#0ff;"></span> Шторм</span>
@@ -261,29 +279,44 @@
         <span class="legend-item"><span class="legend-dot" style="background:#ff8800;"></span> Искандер</span>
         <span class="legend-item"><span class="legend-dot" style="background:#ffcc44;"></span> Ш-136</span>
         <span class="legend-item"><span class="legend-dot" style="background:#ffaa44;"></span> Гербера</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#ff4466;"></span> Х-101</span>
     </div>
 </div>
 
 <script>
 // ========================== КОНФИГУРАЦИЯ ==========================
 const WEAPONS = {
-    // Украинские
     ATACMS:       { sp: 0.06,  cl: '#ff0', nm: 'ATACMS', side: 'ua', type: 'rocket', powerDamage: 1 },
-    BRLP_FP1:     { sp: 0.035, cl: '#f90', nm: 'БРЛП ФП1', side: 'ua', type: 'drone', powerDamage: 0.5 },
+    FLAMINGO:     { sp: 0.065, cl: '#ff66aa', nm: 'Фламинго', side: 'ua', type: 'rocket', powerDamage: 1.5 },
+    ORLAN_10:     { sp: 0.025, cl: '#8f8', nm: 'Орлан-10', side: 'ua', type: 'drone', powerDamage: 0 },
+    BRLP_FP1:     { sp: 0.035, cl: '#f90', nm: 'ФП1', side: 'ua', type: 'drone', powerDamage: 0.5 },
     LYUTIY:       { sp: 0.04,  cl: '#f44', nm: 'Лютий', side: 'ua', type: 'drone', powerDamage: 0.5 },
     STORM_SHADOW: { sp: 0.055, cl: '#0ff', nm: 'Шторм Shadow', side: 'ua', type: 'rocket', powerDamage: 1.5 },
     NEPTUNE:      { sp: 0.045, cl: '#66f', nm: 'Нептун', side: 'ua', type: 'rocket', powerDamage: 1 },
-    // Российские
     KINZHAL:      { sp: 0.085, cl: '#f00', nm: 'Кинжал', side: 'ru', type: 'rocket', powerDamage: 2 },
     ORESHNIK:     { sp: 0.09,  cl: '#f0f', nm: 'Орешник', side: 'ru', type: 'rocket', powerDamage: 3 },
     SHAHED_238:   { sp: 0.03,  cl: '#ff6600', nm: 'Шахед-238', side: 'ru', type: 'drone', powerDamage: 0.5 },
     KALIBR:       { sp: 0.05,  cl: '#ff4444', nm: 'Калибр', side: 'ru', type: 'rocket', powerDamage: 1 },
     ISKANDER:     { sp: 0.075, cl: '#ff8800', nm: 'Искандер', side: 'ru', type: 'rocket', powerDamage: 1.5 },
     SHAHED_136:   { sp: 0.025, cl: '#ffcc44', nm: 'Шахед-136', side: 'ru', type: 'drone', powerDamage: 0.5 },
-    GERBERA:      { sp: 0.035, cl: '#ffaa44', nm: 'Гербера', side: 'ru', type: 'drone', powerDamage: 0.3 }
+    GERBERA:      { sp: 0.035, cl: '#ffaa44', nm: 'Гербера', side: 'ru', type: 'drone', powerDamage: 0.3 },
+    KH_101:       { sp: 0.055, cl: '#ff4466', nm: 'Х-101', side: 'ru', type: 'rocket', powerDamage: 1.5 }
 };
 
 const SIDES = { UKR: 'ukraine', RUS: 'russia' };
+
+// ========================== ПРОВЕРКА ТЕРРИТОРИИ ==========================
+// Упрощённые границы Украины и России для проверки ПВО
+function isOnUkraine(lat, lng) {
+    // Примерные границы Украины (упрощённо)
+    return lat > 44 && lat < 53 && lng > 22 && lng < 40;
+}
+
+function isOnRussia(lat, lng) {
+    // Примерные границы РФ (упрощённо)
+    // Северо-восточная часть карты
+    return lat > 50 && lng > 36 && lng < 42;
+}
 
 // ========================== КАРТА ==========================
 const map = L.map('map', {
@@ -312,48 +345,52 @@ let state = {
     powerOn: true,
     powerHits: 0,
     powerThreshold: 5,
-    powerRepairTimer: 0,
-    powerRepairInterval: null,
-    gameHour: 6,
-    gameMinute: 0,
-    timeSpeed: 1,
+    powerRepairTimer: null,
+    fires: [],
+    dead: 0
 };
 
-// ========================== ВРЕМЯ ==========================
-function updateTime() {
-    state.gameMinute += state.timeSpeed;
-    if (state.gameMinute >= 60) {
-        state.gameMinute = 0;
-        state.gameHour++;
-        if (state.gameHour >= 24) state.gameHour = 0;
-    }
-    const h = String(state.gameHour).padStart(2, '0');
-    const m = String(Math.floor(state.gameMinute)).padStart(2, '0');
-    document.getElementById('gameTime').textContent = h + ':' + m;
-    
-    const isNight = (state.gameHour >= 18 || state.gameHour < 6);
-    const mapContainer = document.getElementById('map');
-    mapContainer.style.filter = isNight ? 'brightness(0.6) saturate(0.8)' : 'brightness(1) saturate(1)';
+// ========================== ПОЖАР ==========================
+function createFire(lat, lng) {
+    const fire = L.circleMarker([lat, lng], {
+        radius: 12,
+        color: '#ff4400',
+        fillColor: '#ff6600',
+        fillOpacity: 0.6,
+        weight: 2,
+        className: 'fire'
+    }).addTo(map);
+    const glow = L.circle([lat, lng], {
+        radius: 25,
+        color: '#ff4400',
+        fillColor: '#ff4400',
+        fillOpacity: 0.1,
+        weight: 1
+    }).addTo(map);
+    state.fires.push({ fire, glow });
+    setTimeout(() => {
+        if (fire) map.removeLayer(fire);
+        if (glow) map.removeLayer(glow);
+        state.fires = state.fires.filter(f => f.fire !== fire);
+    }, 15000 + Math.random() * 25000);
 }
-setInterval(updateTime, 1000);
 
 // ========================== ЭЛЕКТРИЧЕСТВО ==========================
 function checkPower() {
-    if (state.powerHits >= state.powerThreshold) {
+    if (state.powerHits >= state.powerThreshold && state.powerOn) {
         state.powerOn = false;
         document.getElementById('powerStatus').textContent = '⚡ Света нет!';
         document.getElementById('powerStatus').className = 'power-off';
         toast('💡 Свет отключён!', 'danger');
-        if (!state.powerRepairInterval) {
-            const delay = 30000 + Math.random() * 150000;
+        if (!state.powerRepairTimer) {
             state.powerRepairTimer = setTimeout(() => {
                 state.powerOn = true;
                 state.powerHits = 0;
                 document.getElementById('powerStatus').textContent = '⚡ Свет есть';
                 document.getElementById('powerStatus').className = 'power';
-                state.powerRepairInterval = null;
-                toast('💡 Свет восстановлен!', 'success');
-            }, delay);
+                state.powerRepairTimer = null;
+                toast('💡 Свет автоматически восстановлен через 4 часа!', 'success');
+            }, 4 * 60 * 60 * 1000);
         }
     }
 }
@@ -364,7 +401,7 @@ document.getElementById('repairPowerBtn').onclick = function() {
         state.powerHits = 0;
         if (state.powerRepairTimer) {
             clearTimeout(state.powerRepairTimer);
-            state.powerRepairInterval = null;
+            state.powerRepairTimer = null;
         }
         document.getElementById('powerStatus').textContent = '⚡ Свет есть';
         document.getElementById('powerStatus').className = 'power';
@@ -426,6 +463,8 @@ function createTarget(type, lat, lng, side, startLat, startLng) {
         id: state.id++,
         lat: startLat,
         lng: startLng,
+        startLat: startLat,
+        startLng: startLng,
         targetLat: lat,
         targetLng: lng,
         angle: a,
@@ -438,7 +477,8 @@ function createTarget(type, lat, lng, side, startLat, startLng) {
         trail: [],
         trailLine: null,
         powerDamage: w.powerDamage || 0,
-        exploded: false
+        exploded: false,
+        startTime: Date.now()
     };
     const icon = getIcon(type, side);
     t.marker = L.marker([t.lat, t.lng], { icon }).addTo(map);
@@ -456,13 +496,23 @@ function createTarget(type, lat, lng, side, startLat, startLng) {
 
 // ========================== ПВО ==========================
 function createPVO(lat, lng, side) {
-    const c = side === SIDES.UKR ? '#0ff' : '#f66';
+    const c = side === SIDES.UKR ? '#0ff' : '#0f0';
+    const label = side === SIDES.UKR ? 'Patriot' : 'Панцирь';
     const m = L.circleMarker([lat,lng], {
         radius: 14,
         color: c,
         fillColor: c,
         fillOpacity: 0.15,
         weight: 2
+    }).addTo(map);
+    const labelMarker = L.marker([lat, lng + 0.05], {
+        icon: L.divIcon({
+            html: `<div style="color:${c};font-size:8px;font-weight:bold;background:rgba(0,0,0,0.5);padding:1px 6px;border-radius:8px;">${label}</div>`,
+            iconSize: [50,14],
+            className: 'pvo-label'
+        }),
+        interactive: false,
+        zIndexOffset: 1000
     }).addTo(map);
     const r = L.circle([lat,lng], {
         radius: 25000,
@@ -472,7 +522,7 @@ function createPVO(lat, lng, side) {
         weight: 1,
         dashArray: '5,10'
     }).addTo(map);
-    return { lat,lng,side,marker:m,range:r,cooldown:0,maxCooldown:3000 };
+    return { lat,lng,side,marker:m,range:r,cooldown:0,maxCooldown:3000, label: labelMarker };
 }
 
 // ========================== ОБНОВЛЕНИЕ ==========================
@@ -490,14 +540,18 @@ function updateTarget(t) {
             toast('💡 Урон по энергосистеме: +' + t.powerDamage, 'warning');
             checkPower();
         }
-        toast('💥 ' + WEAPONS[t.type].nm + ' поразил цель!');
+        const deadCount = 5 + Math.floor(Math.random() * 16);
+        state.dead += deadCount;
+        document.getElementById('deadCount').textContent = state.dead;
+        toast('💥 ' + WEAPONS[t.type].nm + ' поразил цель! Погибло ' + deadCount + ' чел.', deadCount > 15 ? 'danger' : 'warning');
         L.circleMarker([t.lat,t.lng], {
             radius: 20,
             color: '#ff0',
             fillColor: '#ff0',
-            fillOpacity: 0.4,
+            fillOpacity: 0.5,
             weight: 2
         }).addTo(map);
+        createFire(t.lat, t.lng);
         setTimeout(() => {
             if (t.marker) map.removeLayer(t.marker);
             if (t.label) map.removeLayer(t.label);
@@ -523,6 +577,20 @@ function updateTarget(t) {
             dashArray: '5,10'
         }).addTo(map);
     }
+    // ETA
+    const totalDist = Math.hypot(t.targetLat - t.startLat, t.targetLng - t.startLng);
+    const currentDist = Math.hypot(t.targetLat - t.lat, t.targetLng - t.lng);
+    const progress = 1 - (currentDist / totalDist);
+    if (progress > 0.01 && progress < 1) {
+        const elapsed = (Date.now() - t.startTime) / 60000;
+        const total = elapsed / progress;
+        const remaining = total - elapsed;
+        document.getElementById('etaValue').textContent = Math.max(0, Math.round(remaining));
+    } else if (progress >= 1) {
+        document.getElementById('etaValue').textContent = '0';
+    } else {
+        document.getElementById('etaValue').textContent = '--';
+    }
 }
 
 // ========================== ПВО ЛОГИКА ==========================
@@ -538,6 +606,14 @@ function processPVO() {
                 state.destroyed++;
                 p.cooldown = p.maxCooldown;
                 toast('🎯 Сбит ' + WEAPONS[t.type].nm);
+                L.circleMarker([t.lat,t.lng], {
+                    radius: 15,
+                    color: '#ff0',
+                    fillColor: '#ff0',
+                    fillOpacity: 0.4,
+                    weight: 2
+                }).addTo(map);
+                createFire(t.lat, t.lng);
                 setTimeout(() => {
                     if (t.marker) map.removeLayer(t.marker);
                     if (t.label) map.removeLayer(t.label);
@@ -568,7 +644,6 @@ setInterval(() => {
 
 // ========================== УПРАВЛЕНИЕ ==========================
 
-// Выбор оружия
 document.querySelectorAll('.btn[data-w]').forEach(b => {
     b.onclick = function() {
         document.querySelectorAll('.btn[data-w]').forEach(x => x.classList.remove('active'));
@@ -578,29 +653,24 @@ document.querySelectorAll('.btn[data-w]').forEach(b => {
     };
 });
 
-// Смена стороны
 function switchSide(side) {
     state.side = side;
     const isUkr = side === SIDES.UKR;
     document.getElementById('sideUkr').className = 'side-btn' + (isUkr ? ' active-ukr' : '');
     document.getElementById('sideRus').className = 'side-btn' + (!isUkr ? ' active-rus' : '');
     document.getElementById('sideSubtitle').textContent = isUkr ? '🇺🇦 УКРАИНА' : '🇷🇺 РОССИЯ';
-    
     document.querySelectorAll('.btn.weapon-btn.ua').forEach(b => b.style.display = isUkr ? '' : 'none');
     document.querySelectorAll('.btn.weapon-btn.ru').forEach(b => b.style.display = isUkr ? 'none' : '');
-    
     const firstWeapon = isUkr ? 'ATACMS' : 'KINZHAL';
     document.querySelectorAll('.btn[data-w]').forEach(x => x.classList.remove('active'));
     document.querySelector(`.btn[data-w="${firstWeapon}"]`).classList.add('active');
     state.weapon = firstWeapon;
-    
     toast(isUkr ? '🇺🇦 Украина' : '🇷🇺 Россия');
 }
 
-document.getElementById('sideUkr').onclick = function() { switchSide(SIDES.UKR); };
-document.getElementById('sideRus').onclick = function() { switchSide(SIDES.RUS); };
+document.getElementById('sideUkr').onclick = () => switchSide(SIDES.UKR);
+document.getElementById('sideRus').onclick = () => switchSide(SIDES.RUS);
 
-// Координаты
 function getStartCoords() {
     const lat = parseFloat(document.getElementById('startLat').value);
     const lng = parseFloat(document.getElementById('startLng').value);
@@ -614,7 +684,6 @@ function getTargetCoords() {
     return { lat, lng };
 }
 
-// Запуск
 document.getElementById('launchBtn').onclick = function() {
     const start = getStartCoords();
     const target = getTargetCoords();
@@ -635,7 +704,6 @@ document.getElementById('launchBtn').onclick = function() {
     }, 1000);
 };
 
-// Очистка
 document.getElementById('clearBtn').onclick = function() {
     state.targets.forEach(t => {
         if (t.trailLine) map.removeLayer(t.trailLine);
@@ -644,35 +712,67 @@ document.getElementById('clearBtn').onclick = function() {
     });
     state.targets = [];
     state.destroyed = 0;
+    state.dead = 0;
+    document.getElementById('deadCount').textContent = '0';
+    document.getElementById('etaValue').textContent = '--';
+    state.fires.forEach(f => { map.removeLayer(f.fire); map.removeLayer(f.glow); });
+    state.fires = [];
     toast('🗑 Очищено');
 };
 
 document.getElementById('clearPVOBtn').onclick = function() {
-    state.pvo.forEach(p => { map.removeLayer(p.marker); map.removeLayer(p.range); });
+    state.pvo.forEach(p => { map.removeLayer(p.marker); map.removeLayer(p.range); if (p.label) map.removeLayer(p.label); });
     state.pvo = [];
     toast('🗑 ПВО удалены');
 };
 
-// ПВО Украина
+// ========================== ПВО С ПРОВЕРКОЙ ТЕРРИТОРИИ ==========================
 document.getElementById('pvoUkr').onclick = function() {
     if (state.pvoCD.ukraine > 0) { toast('⏳ '+Math.ceil(state.pvoCD.ukraine/1000)+'с'); return; }
-    state.pvo.push(createPVO(48+Math.random()*3, 30+Math.random()*4, SIDES.UKR));
+    // Генерируем координаты на территории Украины
+    let lat, lng;
+    let attempts = 0;
+    do {
+        lat = 46 + Math.random() * 6;
+        lng = 28 + Math.random() * 8;
+        attempts++;
+    } while (!isOnUkraine(lat, lng) && attempts < 50);
+    
+    if (!isOnUkraine(lat, lng)) {
+        toast('⛔ Не удалось найти место на Украине');
+        return;
+    }
+    
+    state.pvo.push(createPVO(lat, lng, SIDES.UKR));
     state.pvoCD.ukraine = 3000;
-    toast('🛡 ПВО Украины');
+    toast('🛡 Patriot (Украина)');
     this.disabled = true;
     setTimeout(() => this.disabled = false, 3000);
 };
 
 document.getElementById('pvoRus').onclick = function() {
     if (state.pvoCD.russia > 0) { toast('⏳ '+Math.ceil(state.pvoCD.russia/1000)+'с'); return; }
-    state.pvo.push(createPVO(48+Math.random()*3, 30+Math.random()*4, SIDES.RUS));
+    // Генерируем координаты на территории РФ
+    let lat, lng;
+    let attempts = 0;
+    do {
+        lat = 50 + Math.random() * 3;
+        lng = 36 + Math.random() * 5;
+        attempts++;
+    } while (!isOnRussia(lat, lng) && attempts < 50);
+    
+    if (!isOnRussia(lat, lng)) {
+        toast('⛔ Не удалось найти место на России');
+        return;
+    }
+    
+    state.pvo.push(createPVO(lat, lng, SIDES.RUS));
     state.pvoCD.russia = 3000;
-    toast('🛡 ПВО России');
+    toast('🛡 Панцирь (Россия)');
     this.disabled = true;
     setTimeout(() => this.disabled = false, 3000);
 };
 
-// Карта
 map.on('click', function(e) {
     const lat = e.latlng.lat.toFixed(4);
     const lng = e.latlng.lng.toFixed(4);
@@ -696,7 +796,6 @@ document.getElementById('setStartMap').onclick = function() {
     toast('📍 Старт по центру карты');
 };
 
-// Кулдаун ПВО
 setInterval(() => {
     for (let key in state.pvoCD) {
         if (state.pvoCD[key] > 0) state.pvoCD[key] -= 100;
@@ -704,9 +803,8 @@ setInterval(() => {
     }
 }, 100);
 
-// ========================== СТАРТ ==========================
 switchSide(SIDES.UKR);
-console.log('⚡ Воздушная война 2.0 запущена!');
+console.log('⚡ Воздушная война 2.1 запущена!');
 </script>
 </body>
 </html>
